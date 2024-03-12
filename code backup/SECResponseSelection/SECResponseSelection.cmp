@@ -2,7 +2,7 @@
   @description       : 
   @author            : patelutk@sec.gov
   @group             : 
-  @last modified on  : 03-04-2024
+  @last modified on  : 03-10-2024
   @last modified by  : patelutk@sec.gov
 -->
 <aura:component controller="SECResponseSelectionControllerLtng" implements="force:appHostable,lightning:isUrlAddressable">
@@ -141,8 +141,26 @@
                 <table aria-multiselectable="true" class="slds-table slds-table_bordered slds-table_fixed-layout slds-table_resizable-cols" role="grid">
                     <thead>
                         <tr class="slds-line-height_reset">
-                            <th style="width:75px;" aria-label="Actions" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                            <th style="width:75px;" aria-label="Actions" aria-sort="none" class="slds-is-resizable slds-is-sortable DespCol" scope="col">
                                 <span class="slds-truncate" title="Actions">Actions</span>
+                            </th>
+                            <th  style="width:100px;" aria-label="Description" aria-sort="none" class="slds-is-resizable slds-is-sortable DespCol" scope="col">
+                                <span class="slds-truncate" title="Description">Description</span>
+                            </th>
+                            <th  style="width:100px;" aria-label="File Number" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
+                                <h6>
+                                    <aura:if isTrue="{!not(v.hasSearchResults_CR)}">
+                                        File Number
+                                        <aura:set attribute="else">
+                                            <a href="javascript:void(0);" role="button" data-sort="fileNumber" class="slds-th__action color_inherit" onclick="{!c.handleSortBy_CR}" >
+                                                <span class="slds-assistive-text"> Sort By </span> <span class="slds-m-right_xx-small"> File Number </span> 
+                                                <aura:if isTrue="{!v.sortBy_CR == 'fileNumber'}">
+                                                    <lightning:icon iconName="{!(v.sortDirection_CR == 'DESC') ? 'utility:arrowdown' : 'utility:arrowup'}" size="xx-small" alternativeText="{!'Sorted' + (v.sortDirection_CR == 'DESC') ? 'ASC' : 'DESC'}" />
+                                                </aura:if>
+                                            </a>
+                                        </aura:set>
+                                    </aura:if>
+                                </h6>
                             </th>
                             <th aria-label="Title" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
                                 <h6>
@@ -174,7 +192,22 @@
                                     </aura:if>
                                 </h6>
                             </th>
-                            <th aria-label="OCC Approved" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="width:100px;">
+                            <th aria-label="Branch" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="width:100px;">
+                                <h6>
+                                    <aura:if isTrue="{!not(v.hasSearchResults_CR)}">
+                                        Branch
+                                        <aura:set attribute="else">
+                                            <a href="javascript:void(0);" role="button" data-sort="Branch" class="slds-th__action color_inherit" onclick="{!c.handleSortBy_CR}" >
+                                                <span class="slds-assistive-text"> Sort By </span> <span class="slds-m-right_xx-small"> Branch </span> 
+                                                <aura:if isTrue="{!v.sortBy_CR == 'Branch'}">
+                                                    <lightning:icon iconName="{!(v.sortDirection_CR == 'DESC') ? 'utility:arrowdown' : 'utility:arrowup'}" size="xx-small" alternativeText="{!'Sorted' + (v.sortDirection_CR == 'DESC') ? 'ASC' : 'DESC'}" />
+                                                </aura:if>
+                                            </a>
+                                        </aura:set>
+                                    </aura:if>
+                                </h6>
+                            </th>
+                           <!-- <th aria-label="OCC Approved" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col" style="width:100px;">
                                 <h6>
                                     <aura:if isTrue="{!not(v.hasSearchResults_CR)}">
                                         OCC Approved
@@ -188,7 +221,7 @@
                                         </aura:set>
                                     </aura:if>
                                 </h6>
-                            </th>
+                            </th> -->
                             <th style="width:100px;" aria-label="Times Cloned" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
                                 <h6>
                                     <aura:if isTrue="{!not(v.hasSearchResults_CR)}">
@@ -234,24 +267,7 @@
                                     </aura:if>
                                 </h6>
                             </th>
-                            <th  style="width:100px;" aria-label="Description" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
-                                <span class="slds-truncate" title="Description">Description</span>
-                            </th>
-                            <th  style="width:100px;" aria-label="File Number" aria-sort="none" class="slds-is-resizable slds-is-sortable" scope="col">
-                                <h6>
-                                    <aura:if isTrue="{!not(v.hasSearchResults_CR)}">
-                                        File Number
-                                        <aura:set attribute="else">
-                                            <a href="javascript:void(0);" role="button" data-sort="fileNumber" class="slds-th__action color_inherit" onclick="{!c.handleSortBy_CR}" >
-                                                <span class="slds-assistive-text"> Sort By </span> <span class="slds-m-right_xx-small"> File Number </span> 
-                                                <aura:if isTrue="{!v.sortBy_CR == 'fileNumber'}">
-                                                    <lightning:icon iconName="{!(v.sortDirection_CR == 'DESC') ? 'utility:arrowdown' : 'utility:arrowup'}" size="xx-small" alternativeText="{!'Sorted' + (v.sortDirection_CR == 'DESC') ? 'ASC' : 'DESC'}" />
-                                                </aura:if>
-                                            </a>
-                                        </aura:set>
-                                    </aura:if>
-                                </h6>
-                            </th>
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -262,6 +278,16 @@
                                         <a href="javascript:void(0);" data-id="{!response.resp.Id}" tabindex="0" onclick="{!c.clone_CR}">Clone</a>
                                     </div>
                                 </th>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="">
+                                        <a href="javascript:void(0);" tabindex="0" data-id="{!response.resp.Id}" onclick="{!c.viewContent}">View Content</a>
+                                    </div>
+                                </td>
+                                <td role="gridcell">
+                                    <div class="slds-truncate" title="{!response.fileID}">
+                                        <a href="{!'/'+response.caseID}" target="_blank" tabindex="0">{!response.fileID}</a>
+                                    </div>
+                                </td>
                                 <td role="gridcell">
                                     <div class="slds-truncate" title="{!response.title}">{!response.title}</div>
                                 </td>
@@ -275,7 +301,10 @@
                                         </aura:if>
                                     </div>
                                 </td>
-                                <td role="gridcell" class="slds-text-align_center">
+                                 <td role="gridcell">
+                                    <div class="slds-truncate" title="{!response.Branch}">{!response.Branch}</div>
+                                </td>
+                               <!-- <td role="gridcell" class="slds-text-align_center">
                                     <div class="slds-truncate" title="Value Proposition">
                                         <aura:if isTrue="{!response.resp.OCC_Approved__c}">
                                             &#10004;
@@ -284,7 +313,7 @@
                                             &#10006;
                                         </aura:if>
                                     </div>
-                                </td>
+                                </td> -->
                                 <td role="gridcell" class="slds-text-align_center">
                                     <div class="slds-truncate" title="{!response.resp.Times_Cloned__c}">{!response.resp.Times_Cloned__c}</div>
                                 </td>
@@ -303,16 +332,7 @@
                                                                      hour12="true"/>
                                     </div>
                                 </td>
-                                <td role="gridcell">
-                                    <div class="slds-truncate" title="">
-                                        <a href="javascript:void(0);" tabindex="0" data-id="{!response.resp.Id}" onclick="{!c.viewContent}">View Content</a>
-                                    </div>
-                                </td>
-                                <td role="gridcell">
-                                    <div class="slds-truncate" title="{!response.fileID}">
-                                        <a href="{!'/'+response.caseID}" target="_blank" tabindex="0">{!response.fileID}</a>
-                                    </div>
-                                </td>
+                               
                             </tr>  
                         </aura:iteration>
                     </tbody>
@@ -531,7 +551,7 @@
                                 </aura:iteration>
                             </tbody>
                         </table>
-            <!--        <div class="slds-clearfix">
+                    <!--<div class="slds-clearfix">
                             <div class="slds-float_left slds-p-top_medium">
                                 Showing 
                                 {!(v.paginationPageNumber_SR * v.paginationOffset_SR) + 1 - v.paginationOffset_SR} - 
@@ -569,8 +589,8 @@
                                             </aura:set>
                                         </aura:if>
                                     </p>
-                                </div>
-                            </div>
+                                </div> 
+                            </div> 
                         </div> -->
                     </div>
                 </lightning:accordionSection>
