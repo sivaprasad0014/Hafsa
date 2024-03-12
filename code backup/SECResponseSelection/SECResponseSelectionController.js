@@ -262,8 +262,7 @@
     },
 
     search_CR : function (component, event, helper) {
-        console.log('search custom');
-      //  component.set("v.paginationPageNumber_SR", 1);
-       // helper.prepareAndPerformSearch_SR(component);
+        component.set("v.paginationPageNumber_CR", 1);
+        helper.prepareAndPerformSearch_CR(component);
     }
 })
