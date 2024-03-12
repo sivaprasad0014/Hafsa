@@ -5,7 +5,7 @@ public class SECResponseSelectionControllerLtng
     {
         InitResponse ir = new InitResponse();
         ir.standardResplist = [SELECT Response_Title__c, Approved__c, Times_Cloned__c, CreatedBy.Name, 
-                               CreatedDate, Date_Approved__c, Status__c, Response_Detail__c,Branch__c 
+                               CreatedDate, Date_Approved__c, Status__c, Response_Detail__c, Branch__c
                                FROM New_Response__c 
                                WHERE Status__c =: responseType
                                AND Status__c <> 'Archived'
@@ -35,8 +35,10 @@ public class SECResponseSelectionControllerLtng
         }else{
             soslReturnList = search.query(qb.generateSOSL(params));
             customResplist = (List<New_Response__c>) soslReturnList.get(0);
+            system.debug('customResplist >>> '+customResplist);
         }
-        fr.standardWrapResplist = getWrapperForCustomResponse(customResplist); 
+        fr.standardWrapResplist = getWrapperForCustomResponse(customResplist);
+        system.debug('fr.standardWrapResplist >>> '+fr.standardWrapResplist);
         fr.isCustomSearch = true;
         return fr;
     }
@@ -82,7 +84,7 @@ public class SECResponseSelectionControllerLtng
     @AuraEnabled
     public static list<New_Response__c> filterStandard(string responseType)
     {
-        return [SELECT Id, Response_Title__c, Approved__c, Times_Cloned__c, CreatedBy.Name, CreatedDate, Date_Approved__c, Status__c, Response_Detail__c,Branch__c
+        return [SELECT Id, Response_Title__c, Approved__c, Times_Cloned__c, CreatedBy.Name, CreatedDate, Date_Approved__c, Status__c, Response_Detail__c, Branch__c
                 FROM New_Response__c 
                 WHERE Status__c =: responseType
                 ORDER BY CreatedDate DESC
