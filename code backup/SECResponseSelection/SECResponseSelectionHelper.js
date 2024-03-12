@@ -92,6 +92,7 @@
                         data[i].createdBy = data[i].resp.CreatedBy.Name;
                         data[i].createdDate = data[i].resp.CreatedDate;
                         data[i].fileNumber = data[i].fileID;
+                        data[i].Branch = data[i].resp.Branch__c;
                     }
                     component.set("v.originalReferralList_CR", data);
                     component.set("v.referralSearchResult_CR", data);
@@ -260,6 +261,17 @@
         } else {
             totalList = totalList1;
         }
+        var val = component.get("v.searchParam_CR");        
+        if(val){
+            var temp = [];
+            for(var i = 0; i < totalList.length; i++){
+                if(totalList[i].title && totalList[i].title.toUpperCase().includes(val.toUpperCase())){
+                    temp.push(totalList[i]);
+                }
+            }
+            totalList = temp;
+        }
+
         let filterList = [];
         let page = component.get("v.paginationPageNumber_CR");
         let recordsPerPage = component.get("v.paginationOffset_CR");
@@ -303,6 +315,7 @@
         let sortAsc = sortDirection == "ASC" ? true : false;
         if (
             field == "title" ||
+            field == "Branch" ||
             field == "createdBy" ||
             field == "createdDate" || 
             field == "fileNumber"
@@ -414,6 +427,7 @@
         component.set("v.totalPages_SR", totalPages);
         component.set("v.optionsPageNumber_SR", optionsPageNumber);
     },
+
     getFilterRecord_SR: function (component, params) {
         let totalList1 = component.get("v.originalReferralList_SR");
         let totalList = [];
@@ -451,8 +465,7 @@
         ) {
             filterList.push(totalList[i]);
         }
-       // not filtering results for Standard responses.
-       //component.set("v.referralSearchResult_SR", filterList);
+        component.set("v.referralSearchResult_SR", filterList);
     },
     updateResults_SR: function (component, helper) {
         var allResults = component.get("v.originalReferralList_SR") || [];
