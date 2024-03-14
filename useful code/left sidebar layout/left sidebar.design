@@ -1,0 +1,6 @@
+<design:component label="Left sidebar layout">
+	<flexipage:template>
+        <flexipage:region name="Left_Sidebar" defaultwidth="large" />
+        <flexipage:region name="Main_Region" defaultwidth="large" />
+    </flexipage:template>
+</design:component>
