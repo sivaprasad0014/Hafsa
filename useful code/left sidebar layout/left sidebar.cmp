@@ -1,0 +1,16 @@
+<aura:component implements="lightning:hometemplate" description="Custom Left Sidebar">
+    
+    <aura:attribute name="Left_Sidebar" type="Aura.Component[]" />
+    <aura:attribute name="Main_Region" type="Aura.Component[]" />
+    
+    <div>
+        <lightning:layout>
+            <lightning:layoutitem size="{! $Browser.isDesktop ? '4' : '12' }" class="">
+                {!v.Left_Sidebar}
+            </lightning:layoutitem>
+            <lightning:layoutitem size="{! $Browser.isDesktop ? '8' : '12' }" class="">
+                {!v.Main_Region}
+            </lightning:layoutitem>
+        </lightning:layout>
+    </div>
+</aura:component>
