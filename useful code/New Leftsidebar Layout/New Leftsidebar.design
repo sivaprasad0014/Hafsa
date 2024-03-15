@@ -1,0 +1,10 @@
+<design:component label="Custom Left Sidebar">
+	<flexipage:template>
+        <flexipage:region name="Left_Sidebar" defaultWidth="SMALL">
+
+            <flexipage:formfactor type="MEDIUM" width="SMALL"/>
+
+        </flexipage:region>
+        <flexipage:region name="Main_Region" defaultwidth="large" />
+    </flexipage:template>
+</design:component>
