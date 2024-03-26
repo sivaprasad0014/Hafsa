@@ -1,0 +1,294 @@
+<!--
+  @description       : 
+  @author            : patelutk@sec.gov
+  @group             : 
+  @last modified on  : 03-25-2024
+  @last modified by  : patelutk@sec.gov
+-->
+<apex:page id="page" standardController="Case" extensions="FileAssociateController" lightningStylesheets="true" language="en-US">
+    <script src="/soap/ajax/42.0/connection.js" type="text/javascript">
+        function confirmJS(){
+            alert('An activity record has been successfully created for your miscellaneous call.');
+        }
+       
+        function scrollToFilesResult(){
+            console.log('hello');
+            var section = document.getElementById('filesSection');
+            console.log('hello');
+            if(section){
+                section.scrollIntoView({behavior:'smooth'});
+                console.log('hello scrolled to');
+            }else{
+                console.log('no section found');
+            }
+        }
+    </script>
+    <apex:form id="searchForm">
+        <apex:pageblock id="block" >
+            <apex:pageMessages />
+            <apex:pageBlockButtons id="theButtons" location="both">
+                    <apex:actionStatus id="mySaveStatus">  
+                        <apex:facet name="stop">    
+                            <apex:commandButton value="Save" action="{!save}" status="mySaveStatus" rerender="block" rendered="{!correspondentView}"/>     
+                        </apex:facet>  
+                        <apex:facet name="start">    
+                            <apex:commandButton value="Saving..." disabled="true" status="mySaveStatus" rerender="block" rendered="{!correspondentView}"/>     
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <apex:commandButton action="{!cancel}" value="Cancel" rerender="block" rendered="{!correspondentView}"/>
+                </apex:pageBlockButtons>
+                
+            <apex:pageBlockSection title="Correspondent Information" columns="2"  rendered="{!correspondentView}">
+                    <apex:pageBlockSectionItem >
+                    <apex:outputlabel value="Salutation" style="font-weight:bold;"/>
+                    <apex:selectList value="{!salutation}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!items}"/>
+                    </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem />
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="firstname" style="font-weight:bold;" value="First Name" ></apex:outputLabel>
+                    <apex:inputText id="firstname" value="{!firstName}" />
+                </apex:pageBlockSectionItem>
+                <apex:inputField value="{!Account.Middle_Name__pc}"/>               
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel style="font-weight:bold;" value="Last Name" ></apex:outputLabel>
+                    <apex:inputText value="{!lastName}"  />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >    
+                    <!-- <apex:inputField value="{!Account.Suffix__pc}"/> -->
+                    <apex:outputlabel value="Suffix" style="font-weight:bold;" />
+                    <apex:selectList value="{!suffix}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!SuffixType}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                    <apex:inputField value="{!Account.PersonTitle}"/>
+                    <apex:inputField value="{!Account.Military__pc}"/>
+                    <apex:inputField value="{!Account.International_Numbers__pc}"/>
+                    <apex:inputField value="{!Account.Senior_Citizen__pc}"/>
+                    <apex:inputField value="{!Account.Phone}"  />
+                <apex:pageBlockSectionItem >
+                    <!-- <apex:inputField value="{!Account.Correspondent_Type__pc}" required="true" /> -->
+                    <apex:outputlabel value="Correspondent Type" style="font-weight:bold;" />
+                    <apex:selectList value="{!correspondentType}" multiselect="false" size="1">
+                        <apex:selectOptions value="{!CorrType}" />
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+                    <apex:inputField value="{!Account.PersonHomePhone}"  />
+                    <apex:inputField value="{!Account.Primary_Email__pc}"  />               
+                    <apex:inputField value="{!Account.PersonMobilePhone}"  />
+                    <apex:inputField value="{!Account.Personal_Email__pc}"  />      
+                    <apex:inputField value="{!Account.PersonOtherPhone}"  />
+                    <apex:inputField value="{!Account.Other_Email__pc}" />
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>    
+                    <apex:inputField value="{!Account.PersonMailingStreet}"  /> 
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>                    
+                    <apex:inputField value="{!Account.PersonMailingCity}"  />                       
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                    <apex:inputField value="{!Account.PersonMailingState}"  />  
+                    <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>        
+                    <apex:inputField value="{!Account.PersonMailingPostalCode}"  />     
+                    <apex:inputField value="{!Account.International_Mailing_Address__pc}"/>
+                    <apex:inputField value="{!Account.PersonMailingCountry}"/>
+                    <apex:inputField value="{!Account.Partial_Mailing_Address__pc}"/>                       
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection id="theSection" title="Correspondent Search" columns="2"  rendered="{!!correspondentView}">
+                <apex:pageBlockSectionItem id="pbsi01">
+                    <apex:outputLabel style="font-weight:bold;" title="Enter First Name" value="First Name" for="input01" ></apex:outputLabel>
+                    <apex:inputText id="input01" value="{!firstName}" onkeypress="if(event.keyCode == '13'){document.getElementById('{!$Component.sectionItem.investorSearch}').click()}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="pbsi02">
+                    <apex:outputLabel style="font-weight:bold;" value="Last Name" for="input02" ></apex:outputLabel>
+                    <apex:inputText id="input02" value="{!lastName}" onkeypress="if(event.keyCode == '13') {document.getElementById('{!$Component.sectionItem.investorSearch}').click()}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="pbsi03">
+                    <apex:outputLabel style="font-weight:bold;" value="Phone" for="input03" ></apex:outputLabel>
+                    <apex:inputText id="input03" value="{!phone}" onkeypress="if(event.keyCode == '13') {document.getElementById('{!$Component.sectionItem.investorSearch}').click()}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="pbsi04">
+                    <apex:outputLabel style="font-weight:bold;" value="Email" for="input04" ></apex:outputLabel>
+                    <apex:inputText id="input04" value="{!email}" onkeypress="if(event.keyCode == '13') {document.getElementById('{!$Component.sectionItem.investorSearch}').click()}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="pbsi05">
+                    <apex:outputLabel style="font-weight:bold;" value="File Number" for="input05" ></apex:outputLabel>
+                    <apex:inputText id="input05" value="{!fileNumber}" onkeypress="if(event.keyCode == '13') {document.getElementById('{!$Component.sectionItem.investorSearch}').click()}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="sectionItem">
+                    <apex:outputPanel id="thePanel">
+                    <apex:commandButton value="Search"
+                        id="investorSearch" action="{!searchInvestor}" reRender="block"
+                        status="search" />
+                    <apex:commandButton value="Create Correspondent"
+                        action="{!createCorrespondent}" reRender="block" status="search"
+                        disabled="{!!allowQuickCreate}" />
+                    <apex:commandButton value="Clear"
+                        action="{!clear}" reRender="block" status="search" />
+                    </apex:outputPanel> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+              <!--      <apex:outputPanel >
+                   <apex:commandButton value="Log Misc Call" 
+                        id="logMiscCall" action="{!logMiscCall}" reRender="block" status="search" rendered="{!searchOnly}" oncomplete="confirmJS()"/>
+                    </apex:outputPanel> -->
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <!-- Display search results -->
+            <apex:pageblocksection columns="1" title="Correspondent results"
+                rendered="{!AND(!investorView, investorSearchPerformed, !correspondentView)}">
+                <center><b>There were no correspondents found.</b></center>
+                </apex:pageblocksection>
+            <apex:pageblocksection columns="1" title="Correspondent results"
+                rendered="{!AND(investorView, investorSearchPerformed)}">
+                <apex:outputpanel id="Investorlist">
+                    <apex:pageBlockTable value="{!investors}" var="correspondent">
+                        <apex:column >
+                            <apex:commandButton value="Find Files" action="{!searchFiles}"
+                                reRender="block" status="search">
+                                <apex:param name="contactId" value="{!correspondent.contactId}" />
+                                <apex:param name="accountId" value="{!correspondent.accountId}" />
+                            </apex:commandButton>
+                            <apex:commandButton value="Find Files Custom" action="{!searchFiles}"
+                            reRender="fileResultsFound" oncomplete="scrollToFilesResult();">
+                            <apex:param name="contactId" value="{!correspondent.contactId}" />
+                            <apex:param name="accountId" value="{!correspondent.accountId}" />
+                        </apex:commandButton>
+                            <apex:commandButton value="Create New File"
+                                action="{!assignToInvestor}" reRender="block" status="search"
+                                disabled="{!AND(!correspondent.rowSearchDone,!correspondent.anonymousFlag)}" rendered="{!!searchOnly}">
+                                <apex:param name="contactId" value="{!correspondent.contactId}" />
+                                <apex:param name="accountId" value="{!correspondent.accountId}" />
+                            </apex:commandButton>
+                        <!--   <apex:commandButton value="View"
+                                action="{!viewCorrespondent}" reRender="block" status="search"
+                               disabled="{!!fileSearchPerformed}" rendered="{!searchOnly}">
+                               <apex:param name="accountId" value="{!correspondent.accountId}" />
+                          </apex:commandButton>-->
+                            <apex:commandButton value="New File"
+                                action="{!newFile}" reRender="block" status="search"
+                                disabled="{!AND(!correspondent.rowSearchDone,!correspondent.anonymousFlag)}" rendered="{!searchOnly}">
+                                <apex:param name="contactId" value="{!correspondent.contactId}" />
+                                <apex:param name="accountId" value="{!correspondent.accountId}" />
+                            </apex:commandButton>
+                        </apex:column>
+                        <apex:column headervalue="Correspondent Name">
+                            <apex:outputlink target="_preview" value="/{!correspondent.accountId}">
+                                <apex:outputtext value="{!correspondent.fullName}" />
+                            </apex:outputlink>
+                        </apex:column>
+                        <apex:column headervalue="Phone">
+                            <apex:outputtext value="{!correspondent.phone}" />
+                        </apex:column>
+                        <apex:column headervalue="Email">
+                            <apex:outputtext value="{!correspondent.email}" />
+                        </apex:column>
+                        <apex:column headervalue="State">
+                            <apex:outputtext value="{!correspondent.state}" />
+                        </apex:column>
+                        <apex:column headervalue="ACTS+">
+                            <apex:inputCheckbox value="{!correspondent.actsFlag}" disabled="false"/>
+                        </apex:column>
+                        <apex:column headervalue="Correspondent Type">
+                            <apex:outputtext value="{!correspondent.corrType}" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    <br />
+                    <br />
+                </apex:outputpanel>
+            </apex:pageblocksection>
+            <div id='filesSection'>
+            <apex:pageblocksection columns="1" title="File results"
+                rendered="{!AND(!fileView, fileSearchPerformed, !correspondentView)}">
+                <center><b>There were no files found.</b></center>
+                </apex:pageblocksection>
+            <apex:pageblocksection columns="1" title="File results"
+                rendered="{!AND(fileView, fileSearchPerformed)}" id="fileResultsFound">
+                <apex:outputpanel id="Investorlist">
+                    <apex:pageBlockTable value="{!files}" var="file">
+                        <apex:column >
+                            <apex:commandButton value="Assign To File"
+                                action="{!assignToFile}" reRender="block" status="search" rendered="{!!searchOnly}">
+                                <apex:param name="relatedFileId" value="{!file.id}" />
+                            </apex:commandButton>
+                            <!--<apex:commandButton value="View"-->
+                            <!--action="{!viewFile}" reRender="block" status="search" rendered="{!searchOnly}">-->
+                            <!--<apex:param name="relatedFileId" value="{!file.id}" />-->
+                            <!--</apex:commandButton>-->
+                        </apex:column>
+                        <apex:column headervalue="File Number">
+                            <apex:outputlink target="_preview" value="/{!file.Id}">
+                            <apex:outputtext value="{!file.FileNumber}" />
+                            </apex:outputlink>
+                        </apex:column>
+                        <apex:column headervalue="Status">
+                            <apex:outputtext value="{!file.Status}" />
+                        </apex:column>
+                        <apex:column headervalue="Origin">
+                            <apex:outputtext value="{!file.Origin}" />
+                        </apex:column>
+                        <apex:column headervalue="Short Description">
+                            <apex:outputtext value="{!file.FileSubject}" />
+                        </apex:column>
+                        <apex:column headervalue="File Subjects">
+                            <apex:outputtext value="{!file.subjects}" />
+                        </apex:column>
+                        <apex:column headervalue="Owner">
+                            <apex:outputtext value="{!file.OwnerName}" />
+                        </apex:column>
+                        <apex:column headervalue="Created Date">
+                            <apex:outputtext value="{!file.createDate}" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:outputpanel>
+            </apex:pageblocksection>
+            </div>
+            <!-- This section displays the files where the selected correspondent is a correspondent role. -->
+            <apex:pageblocksection columns="1" title="File results(Correspondent Role Files)"
+                rendered="{!AND(fileView2, fileSearchPerformed)}">
+                <apex:outputpanel id="Investorlist2">
+                    <apex:pageBlockTable value="{!files2}" var="file2">
+                        <apex:column >
+                            <apex:commandButton value="Assign To File"
+                                action="{!assignToFile}" reRender="block" status="search" rendered="{!!searchOnly}">
+                                <apex:param name="relatedFileId" value="{!file2.id}" />
+                            </apex:commandButton>
+                            <!--                            <apex:commandButton value="View"-->
+                            <!--                                action="{!viewFile}" reRender="block" status="search" rendered="{!searchOnly}">-->
+                            <!--                                <apex:param name="relatedFileId" value="{!file.id}" />-->
+                            <!--                            </apex:commandButton>-->
+                        </apex:column>
+                        <apex:column headervalue="File Number">
+                            <apex:outputlink target="_preview" value="/{!file2.Id}">
+                            <apex:outputtext value="{!file2.FileNumber}" />
+                            </apex:outputlink>
+                        </apex:column>
+                        <apex:column headervalue="Status">
+                            <apex:outputtext value="{!file2.Status}" />
+                        </apex:column>
+                        <apex:column headervalue="Origin">
+                            <apex:outputtext value="{!file2.Origin}" />
+                        </apex:column>
+                        <apex:column headervalue="Short Description">
+                            <apex:outputtext value="{!file2.FileSubject}" />
+                        </apex:column>
+                        <apex:column headervalue="File Subjects">
+                            <apex:outputtext value="{!file2.subjects}" />
+                        </apex:column>
+                        <apex:column headervalue="Owner">
+                            <apex:outputtext value="{!file2.OwnerName}" />
+                        </apex:column>
+                        <apex:column headervalue="Created Date">
+                            <apex:outputtext value="{!file2.createDate}" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:outputpanel>
+            </apex:pageblocksection>
+            <!-- End of search results -->
+            <center><b><apex:actionstatus id="search" startText="Processing...">
+            </apex:actionstatus></b></center>
+        </apex:pageblock>
+        
+        </apex:form>
+</apex:page>
